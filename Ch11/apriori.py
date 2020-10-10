@@ -77,7 +77,7 @@ def calcConf(freqSet, H, supportData, brl, minConf=0.7):
     for conseq in H:
         conf = supportData[freqSet]/supportData[freqSet-conseq] #calc confidence
         if conf >= minConf: 
-            print freqSet-conseq,'-->',conseq,'conf:',conf
+            print(freqSet-conseq,'-->',conseq,'conf:',conf)
             brl.append((freqSet-conseq, conseq, conf))
             prunedH.append(conseq)
     return prunedH
@@ -93,17 +93,18 @@ def rulesFromConseq(freqSet, H, supportData, brl, minConf=0.7):
 def pntRules(ruleList, itemMeaning):
     for ruleTup in ruleList:
         for item in ruleTup[0]:
-            print itemMeaning[item]
-        print "           -------->"
+            print(itemMeaning[item])
+        print("           -------->")
         for item in ruleTup[1]:
-            print itemMeaning[item]
-        print "confidence: %f" % ruleTup[2]
+            print(itemMeaning[item])
+        print("confidence: %f" % ruleTup[2])
         print       #print a blank line
         
             
 from time import sleep
 from votesmart import votesmart
-votesmart.apikey = 'get your api key first'
+votesmart.apikey = 'a7fa40adec6f4a77178799fae4441030'
+#votesmart.apikey = 'get your api key first'
 def getActionIds():
     actionIdList = []; billTitleList = []
     fr = open('recent20bills.txt') 
@@ -115,11 +116,11 @@ def getActionIds():
                 if action.level == 'House' and \
                 (action.stage == 'Passage' or action.stage == 'Amendment Vote'):
                     actionId = int(action.actionId)
-                    print 'bill: %d has actionId: %d' % (billNum, actionId)
+                    print('bill: %d has actionId: %d' % (billNum, actionId))
                     actionIdList.append(actionId)
                     billTitleList.append(line.strip().split('\t')[1])
         except:
-            print "problem getting bill %d" % billNum
+            print("problem getting bill %d" % billNum)
         sleep(1)                                      #delay to be polite
     return actionIdList, billTitleList
         
@@ -132,7 +133,7 @@ def getTransList(actionIdList, billTitleList): #this will return a list of lists
     voteCount = 2
     for actionId in actionIdList:
         sleep(3)
-        print 'getting votes for actionId: %d' % actionId
+        print('getting votes for actionId: %d' % actionId)
         try:
             voteList = votesmart.votes.getBillActionVotes(actionId)
             for vote in voteList:
@@ -147,6 +148,6 @@ def getTransList(actionIdList, billTitleList): #this will return a list of lists
                 elif vote.action == 'Yea':
                     transDict[vote.candidateName].append(voteCount + 1)
         except: 
-            print "problem getting actionId: %d" % actionId
+            print("problem getting actionId: %d" % actionId)
         voteCount += 2
     return transDict, itemMeaning
